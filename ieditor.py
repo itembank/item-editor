@@ -14,9 +14,9 @@ field06 = 'ans'
 
 def startup_check():
     if os.path.isfile(FilePath) and os.access(FilePath, os.R_OK):
-        print ("File exists and is readable")
+        print("File exists and is readable")
     else:
-        print ("Either file is missing or is not readable, creating file...")
+        print("Either file is missing or is not readable, creating file...")
         with io.open(os.path.join(FilePath), 'w') as db_file:
             db_file.write(json.dumps([]))
 
@@ -51,8 +51,7 @@ def load_trv_with_json():
         c = key[field04]
         d = key[field05]
         ans = key[field06]
-        trv.insert('',index='end',iid=rowIndex,text="",
-                        values=(guid_value,title,a,b,c,d,ans))    
+        trv.insert('',index='end',iid=rowIndex,text="",values=(guid_value,title,a,b,c,d,ans))    
         rowIndex=rowIndex+1
 
 def clear_all_fields():
@@ -195,10 +194,13 @@ def process_request(command_type,guid_value,title,a,b,c,d,ans):
     clear_all_fields()
 
 def MouseButtonUpCallBack(event):
-    currentRowIndex = trv.selection()[0]
-    lastTuple = (trv.item(currentRowIndex,'values'))
-    load_edit_field_with_row_data(lastTuple)
-    change_enabled_state('Edit')
+    try:
+        currentRowIndex = trv.selection()[0]
+        lastTuple = (trv.item(currentRowIndex,'values'))
+        load_edit_field_with_row_data(lastTuple)
+        change_enabled_state('Edit')
+    except IndexError:
+        print("Index width has been adjusted")
 
 root = Tk()
 root.title('Item Editor')
