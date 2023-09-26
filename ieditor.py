@@ -207,8 +207,11 @@ root.title('Item Editor')
 root.geometry("1024x768")
 root.configure(bg='lightgray')
 
+margin = Label(text=" ",bg="lightgray")
+margin.grid(row=0,column=0)
+
 input_frame = LabelFrame(root,text='Info',bg="lightgray",font=('Consolas',14))
-input_frame.grid(row=0,column=0,rowspan=7,columnspan=4)
+input_frame.grid(row=0,column=1,rowspan=7,columnspan=4)
 
 l1 = Label(input_frame, anchor="w", width=24,
            height=1, relief="ridge", text="id",
@@ -305,7 +308,7 @@ trv.bind("<ButtonRelease>",MouseButtonUpCallBack)
 
 scrollbar = Scrollbar(root, orient=VERTICAL, command=trv.yview)
 trv.configure(yscroll=scrollbar.set)
-scrollbar.grid(row=9,rowspan=16,column=7,sticky='ns')
+scrollbar.grid(row=9,rowspan=16,column=8,sticky='ns')
 
 startup_check()
 load_json_from_file()
