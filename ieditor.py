@@ -13,7 +13,7 @@ field05 = 'd'
 field06 = 'ans'
 
 def startup_check():
-    if os.path.isfile(FilePath) and os.access(FilePath, os.R_OK):
+    if os.path.isfile(FilePath) and os.access(FilePath,os.R_OK):
         print("File exists and is readable")
     else:
         print("Either file is missing or is not readable, creating file...")
@@ -26,11 +26,12 @@ def load_json_from_file():
         my_data_list = json.load(file_handler)
     file_handler.close
     print('File has been read and closed')
+    change_enabled_state('New')
 
 def save_json_to_file():
     global my_data_list
-    with open(FilePath, "w") as file_handler:
-        json.dump(my_data_list, file_handler, indent=4)
+    with open(FilePath,"w") as file_handler:
+        json.dump(my_data_list,file_handler,indent=4)
     file_handler.close
     print('File has been written to and closed')
 
@@ -51,7 +52,7 @@ def load_trv_with_json():
         c = key[field04]
         d = key[field05]
         ans = key[field06]
-        trv.insert('',index='end',iid=rowIndex,text="",values=(guid_value,title,a,b,c,d,ans))    
+        trv.insert('',index='end',id=rowIndex,text="",values=(guid_value,title,a,b,c,d,ans))
         rowIndex=rowIndex+1
 
 def clear_all_fields():
@@ -64,7 +65,7 @@ def clear_all_fields():
     crm_id.configure(text="")
     crm_title.focus_set()
     id_value.set(uuid.uuid4())
-    change_background_color("#FFFFFF")
+    change_background_color("white")
 
 def find_row_in_my_data_list(guid_value):
     global my_data_list
@@ -91,14 +92,9 @@ def change_background_color(new_color):
     crm_ans.config(bg=new_color)
 
 def change_enabled_state(state):
-
     if state == 'Edit':
         btnUpdate["state"]="normal"
         btnDelete["state"]="normal"
-        btnAdd["state"]="disabled"
-    elif state=='Cancel':
-        btnUpdate["state"]="disabled"
-        btnDelete["state"]="disabled"
         btnAdd["state"]="disabled"
     else:
         btnUpdate["state"]="disabled"
@@ -145,7 +141,7 @@ def add_entry():
     ans = crm_ans.get()
 
     if len(title)==0:
-        change_background_color("#FFB2AE")
+        change_background_color("pink")
         return
 
     process_request('_INSERT_',guid_value,title,a,b,c,d,ans)
@@ -160,7 +156,7 @@ def update_entry():
     ans = crm_ans.get()
 
     if len(title)==0:
-        change_background_color("#FFB2AE")
+        change_background_color("pink")
         return
 
     process_request('_UPDATE_',guid_value,title,a,b,c,d,ans)
@@ -175,13 +171,11 @@ def process_request(command_type,guid_value,title,a,b,c,d,ans):
     if command_type == "_UPDATE_":
         row = find_row_in_my_data_list(guid_value)
         if row >= 0:
-            dict = {"id":guid_value, field01:title, 
-                    field02:a, field03:b, field04:c, field05:d, field06:ans}
+            dict = {"id":guid_value,field01:title,field02:a,field03:b,field04:c,field05:d,field06:ans}
             my_data_list[row]=dict
 
     elif command_type == "_INSERT_":
-        dict = {"id":guid_value, field01:title, 
-                field02:a, field03:b, field04:c, field05:d, field06:ans}
+        dict = {"id":guid_value,field01:title,field02:a,field03:b,field04:c,field05:d,field06:ans}
         my_data_list.append(dict)
 
     elif command_type == "_DELETE_":
@@ -192,6 +186,7 @@ def process_request(command_type,guid_value,title,a,b,c,d,ans):
     save_json_to_file()
     load_trv_with_json()
     clear_all_fields()
+    change_enabled_state('New')
 
 def MouseButtonUpCallBack(event):
     try:
@@ -204,92 +199,59 @@ def MouseButtonUpCallBack(event):
 
 root = Tk()
 root.title('Item Editor')
-root.geometry("1024x768")
+root.geometry("915x625")
 root.configure(bg='lightgray')
 
 margin = Label(text=" ",bg="lightgray")
 margin.grid(row=0,column=0)
-
-input_frame = LabelFrame(root,text='Info',bg="lightgray",font=('Consolas',14))
+input_frame = LabelFrame(root,text='Record',bg="lightgray",font=('Calibri',14))
 input_frame.grid(row=0,column=1,rowspan=7,columnspan=4)
 
-l1 = Label(input_frame, anchor="w", width=24,
-           height=1, relief="ridge", text="id",
-           font=('Consolas',14)).grid(row=1, column=0)
-
-l2 = Label(input_frame, anchor="w", width=24, 
-           height=1, relief="ridge", text=field01,
-           font=('Consolas',14)).grid(row=2, column=0)
-
-l3 = Label(input_frame, anchor="w", width=24, 
-           height=1, relief="ridge", text=field02,
-           font=('Consolas',14)).grid(row=3, column=0) 
-
-l4 = Label(input_frame, anchor="w", width=24, 
-           height=1, relief="ridge", text=field03,
-           font=('Consolas',14)).grid(row=4, column=0)
-
-l5 = Label(input_frame, anchor="w", width=24, 
-           height=1, relief="ridge", text=field04,
-           font=('Consolas',14)).grid(row=5, column=0)
-
-l6 = Label(input_frame, anchor="w", width=24, 
-           height=1, relief="ridge", text=field05,
-           font=('Consolas',14)).grid(row=6, column=0)
-
-l7 = Label(input_frame, anchor="w", width=24, 
-           height=1, relief="ridge", text="ans", 
-           font=('Consolas',14)).grid(row=7, column=0)
+l1 = Label(input_frame,anchor="w",width=18,height=1,relief="ridge",text="id",font=('Calibri',14)).grid(row=1,column=0)
+l2 = Label(input_frame,anchor="w",width=18,height=1,relief="ridge",text=field01,font=('Calibri',14)).grid(row=2,column=0)
+l3 = Label(input_frame,anchor="w",width=18,height=1,relief="ridge",text=field02,font=('Calibri',14)).grid(row=3,column=0) 
+l4 = Label(input_frame,anchor="w",width=18,height=1,relief="ridge",text=field03,font=('Calibri',14)).grid(row=4, column=0)
+l5 = Label(input_frame,anchor="w",width=18,height=1,relief="ridge",text=field04,font=('Calibri',14)).grid(row=5,column=0)
+l6 = Label(input_frame,anchor="w",width=18,height=1,relief="ridge",text=field05,font=('Calibri',14)).grid(row=6,column=0)
+l7 = Label(input_frame,anchor="w",width=18,height=1,relief="ridge",text=field06,font=('Calibri',14)).grid(row=7, column=0)
 
 id_value = StringVar()
 id_value.set(uuid.uuid4())
 
-crm_id = Label(input_frame, anchor="w", height=1,
-           relief="ridge", textvariable=id_value, font=('Consolas',14))
+crm_id = Label(input_frame,anchor="w",height=1,width=68,relief="ridge",textvariable=id_value,font=('Calibri',14))
 crm_id.grid(row=1, column=1)
 
-crm_title = Entry(input_frame,width=30,borderwidth=2,fg="black",font=('Consolas',14))
+crm_title = Entry(input_frame,width=68,borderwidth=2,font=('Calibri',14))
 crm_title.grid(row=2, column=1,columnspan=2)
-
-crm_a = Entry(input_frame,width=30,borderwidth=2,fg="black",font=('Consolas',14))
+crm_a = Entry(input_frame,width=68,borderwidth=2,font=('Calibri',14))
 crm_a.grid(row=3, column=1,columnspan=2)
-
-crm_b = Entry(input_frame,width=30,borderwidth=2,fg="black",font=('Consolas',14))
+crm_b = Entry(input_frame,width=68,borderwidth=2,font=('Calibri',14))
 crm_b.grid(row=4, column=1,columnspan=2)
-
-crm_c = Entry(input_frame,width=30,borderwidth=2,fg="black",font=('Consolas',14))
+crm_c = Entry(input_frame,width=68,borderwidth=2,font=('Calibri',14))
 crm_c.grid(row=5, column=1,columnspan=2)
-
-crm_d = Entry(input_frame,width=30,borderwidth=2,fg="black",font=('Consolas',14))
+crm_d = Entry(input_frame,width=68,borderwidth=2,font=('Calibri',14))
 crm_d.grid(row=6, column=1,columnspan=2)
-
-crm_ans = Entry(input_frame,width=30,borderwidth=2,fg="black",font=('Consolas',14))
+crm_ans = Entry(input_frame,width=68,borderwidth=2,font=('Calibri',14))
 crm_ans.grid(row=7, column=1,columnspan=2)
 
-ButtonFrame = LabelFrame(root,text='',bg="lightgray",font=('Consolas',14))
+ButtonFrame = LabelFrame(root,text='',bg="lightgray",font=12)
 ButtonFrame.grid(row=8,column=0,columnspan=6)
 
 btnShow=Button(ButtonFrame,text="Print",padx=20,pady=10,command=print_all_entries)
 btnShow.pack(side=LEFT)
-
 btnAdd=Button(ButtonFrame,text="Add",padx=20,pady=10,command=add_entry)
 btnAdd.pack(side=LEFT)
-
 btnUpdate=Button(ButtonFrame,text="Update",padx=20,pady=10,command=update_entry)
 btnUpdate.pack(side=LEFT)
-
 btnDelete=Button(ButtonFrame,text="Delete",padx=20,pady=10,command=delete_entry)
 btnDelete.pack(side=LEFT)
-
 btnClear=Button(ButtonFrame,text="Cancel",padx=18,pady=10,command=cancel)
 btnClear.pack(side=LEFT)
-
 btnExit=Button(ButtonFrame,text="Exit",padx=20,pady=10,command=root.quit)
 btnExit.pack(side=LEFT)
 
-trv = ttk.Treeview(root,columns=(1,2,3,4,5,6,7),show="headings",height="16")
-trv.grid(row=9,column=0,rowspan=16,columnspan=7)
-
+trv = ttk.Treeview(columns=(1,2,3,4,5,6,7),show="headings",height="16")
+trv.grid(row=9,column=1,rowspan=16,columnspan=7)
 trv.heading(1,text="id", anchor="center")
 trv.heading(2,text=field01, anchor="center")
 trv.heading(3,text=field02, anchor="center")
@@ -297,7 +259,7 @@ trv.heading(4,text=field03, anchor="center")
 trv.heading(5,text=field04, anchor="center")
 trv.heading(6,text=field05, anchor="center")
 trv.heading(7,text=field06, anchor="center")
-trv.column("#1",anchor="w",width=230, stretch=True)
+trv.column("#1",anchor="w",width=230, stretch=False)
 trv.column("#2",anchor="w", width=200, stretch=False)
 trv.column("#3",anchor="w", width=100, stretch=False)
 trv.column("#4",anchor="w", width=100, stretch=False)
@@ -306,7 +268,7 @@ trv.column("#6",anchor="w", width=100, stretch=False)
 trv.column("#7",anchor="w", width=50, stretch=False)
 trv.bind("<ButtonRelease>",MouseButtonUpCallBack)
 
-scrollbar = Scrollbar(root, orient=VERTICAL, command=trv.yview)
+scrollbar = Scrollbar(command=trv.yview)
 trv.configure(yscroll=scrollbar.set)
 scrollbar.grid(row=9,rowspan=16,column=8,sticky='ns')
 
